@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Bootanimation Maker PRO</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        :root {
+            --primary: #2196F3;
+            --primary-dark: #1976D2;
+            --secondary: #FF9800;
+            --success: #4CAF50;
+            --danger: #F44336;
+            --warning: #FFC107;
+            --dark: #212121;
+            --dark-light: #424242;
+            --light: #FAFAFA;
+            --gray: #757575;
+            --border-radius: 8px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #2196F3, #00BCD4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #B0BEC5;
+            font-size: 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Main Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 1100px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Panel */
+        .panel {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: var(--border-radius);
+            padding: 22px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow);
+        }
+
+        .panel-title {
+            font-size: 1.3rem;
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-title i {
+            color: var(--primary);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            color: #B0BEC5;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: rgba(33, 150, 243, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #B0BEC5;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            color: var(--light);
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(33, 150, 243, 0.1);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .info-text {
+            font-size: 0.8rem;
+            color: #78909C;
+            margin-top: 4px;
+        }
+
+        .inline-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* Compression Options */
+        .compression-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .compression-btn {
+            padding: 10px;
+            border-radius: var(--border-radius);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #B0BEC5;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .compression-btn:hover {
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .compression-btn.active {
+            background: rgba(33, 150, 243, 0.2);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Parts Manager */
+        .parts-manager {
+            margin-top: 20px;
+        }
+
+        .parts-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: 10px;
+        }
+
+        .part-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .part-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .part-name {
+            font-weight: 600;
+            color: white;
+        }
+
+        .part-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .part-control-btn {
+            background: none;
+            border: none;
+            color: #B0BEC5;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .part-control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .part-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.85rem;
+        }
+
+        .part-files {
+            margin-top: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            padding: 8px;
+        }
+
+        .file-tag {
+            display: inline-block;
+            background: rgba(33, 150, 243, 0.2);
+            color: #64B5F6;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin: 2px;
+        }
+
+        .part-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* File Browser */
+        .file-browser {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .file-browser:hover {
+            border-color: var(--primary);
+            background: rgba(33, 150, 243, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .upload-text {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtext {
+            color: #B0BEC5;
+            font-size: 0.85rem;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            max-height: 350px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--border-radius);
+        }
+
+        .file-thumb {
+            position: relative;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: move;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .file-thumb:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .file-thumb.selected {
+            border-color: var(--success);
+        }
+
+        .file-thumb img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .file-name {
+            padding: 6px;
+            font-size: 0.75rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            color: #E0E0E0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-check {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: white;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #4CAF50, #388E3C);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+        }
+
+        /* Progress */
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2196F3, #00BCD4);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #B0BEC5;
+            font-size: 0.85rem;
+        }
+
+        /* Status */
+        .status {
+            padding: 12px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .status-success {
+            background: rgba(76, 175, 80, 0.2);
+            border-left: 4px solid #4CAF50;
+            color: #C8E6C9;
+        }
+
+        .status-error {
+            background: rgba(244, 67, 54, 0.2);
+            border-left: 4px solid #F44336;
+            color: #FFCDD2;
+        }
+
+        .status-info {
+            background: rgba(33, 150, 243, 0.2);
+            border-left: 4px solid #2196F3;
+            color: #BBDEFB;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #78909C;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+
+        .mt-15 {
+            margin-top: 15px;
+        }
+
+        .mb-15 {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Bootanimation Maker PRO</div>
+            <div class="subtitle">
+                Full control bootanimation creator • Custom desc.txt • Multiple parts • File management • Compression levels
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <!-- Left Panel: Files & Parts -->
+            <div class="panel">
+                <h3 class="panel-title"><i class="fas fa-images"></i> Files & Parts Management</h3>
+                
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" data-tab="files">Upload Files</button>
+                    <button class="tab" data-tab="parts">Manage Parts</button>
+                    <button class="tab" data-tab="assign">Assign Files</button>
+                </div>
+
+                <!-- Files Tab -->
+                <div class="tab-content active" id="filesTab">
+                    <div class="file-browser" id="fileBrowser">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <div class="upload-text">Click or drag to upload frames</div>
+                        <div class="upload-subtext">PNG or JPG images • Sequential naming recommended</div>
+                        <input type="file" id="fileInput" accept=".png,.jpg,.jpeg" multiple>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Selected Files (<span id="fileCount">0</span>)</label>
+                        <div class="files-grid" id="filesGrid">
+                            <div class="text-center" style="grid-column: 1/-1; color: #78909C; padding: 40px;">
+                                No files uploaded yet
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-secondary" id="selectAllBtn">
+                            <i class="fas fa-check-square"></i> Select All
+                        </button>
+                        <button class="btn btn-secondary" id="deselectAllBtn">
+                            <i class="fas fa-square"></i> Deselect All
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Parts Tab -->
+                <div class="tab-content" id="partsTab">
+                    <div class="parts-manager">
+                        <div class="parts-list" id="partsList">
+                            <div class="text-center" style="color: #78909C; padding: 30px;">
+                                No parts created yet
+                            </div>
+                        </div>
+                        
+                        <div class="part-actions">
+                            <button class="btn btn-primary" id="addPartBtn">
+                                <i class="fas fa-plus"></i> Add New Part
+                            </button>
+                            <button class="btn btn-secondary" id="clearPartsBtn">
+                                <i class="fas fa-trash"></i> Clear All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assign Tab -->
+                <div class="tab-content" id="assignTab">
+                    <div class="form-group">
+                        <label>Selected Part: <span id="currentPartName">None</span></label>
+                        <select id="partSelector" class="mb-15">
+                            <option value="">Select a part...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Drag files to assign or use buttons:</label>
+                        <div class="files-grid" id="assignGrid">
+                            <div class="text-center" style="grid-column: 1/-1; color: #78909C; padding: 40px;">
+                                Select a part first
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn btn-success" id="assignSelectedBtn">
+                            <i class="fas fa-share-square"></i> Assign Selected
+                        </button>
+                        <button class="btn btn-warning" id="removeFromPartBtn">
+                            <i class="fas fa-times"></i> Remove from Part
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Configuration -->
+            <div class="panel">
+                <h3 class="panel-title"><i class="fas fa-cog"></i> Configuration & Build</h3>
+                
+                <div class="tabs">
+                    <button class="tab active" data-tab="basic">Basic Settings</button>
+                    <button class="tab" data-tab="advanced">Advanced Settings</button>
+                    <button class="tab" data-tab="build">Build Options</button>
+                </div>
+
+                <!-- Basic Settings -->
+                <div class="tab-content active" id="basicTab">
+                    <div class="form-group">
+                        <label>Animation Name</label>
+                        <input type="text" id="animationName" value="custom_bootanimation" placeholder="Enter animation name...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Base Resolution</label>
+                        <div class="inline-inputs">
+                            <input type="number" id="width" value="1080" min="240" max="3840" placeholder="Width">
+                            <input type="number" id="height" value="1920" min="320" max="2160" placeholder="Height">
+                            <input type="number" id="fps" value="30" min="1" max="60" placeholder="FPS">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Compression Level</label>
+                        <div class="compression-options">
+                            <button class="compression-btn active" data-level="0">Store (Fastest)</button>
+                            <button class="compression-btn" data-level="6">Fast</button>
+                            <button class="compression-btn" data-level="9">Maximum</button>
+                        </div>
+                        <div class="info-text">Store = No compression (fastest), Maximum = Best compression (slowest)</div>
+                    </div>
+                </div>
+
+                <!-- Advanced Settings -->
+                <div class="tab-content" id="advancedTab">
+                    <div class="form-group">
+                        <label>Custom desc.txt</label>
+                        <textarea id="customDesc" placeholder="1080 1920 30&#10;p 1 0 part0&#10;p 0 0 part1">
+1080 1920 30
+p 1 0 part0
+p 0 0 part1</textarea>
+                        <div class="info-text">
+                            Line 1: width height fps<br>
+                            Next lines: p [count] [pause] [folder]<br>
+                            count=0 (infinite loop), pause=frame delay (1/fps)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="useCustomDesc" checked> Use custom desc.txt
+                        </label>
+                        <label>
+                            <input type="checkbox" id="autoGenerateDesc"> Auto-generate from parts
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>File Format</label>
+                        <select id="fileFormat">
+                            <option value="png">PNG (Lossless)</option>
+                            <option value="jpg">JPG (Compressed)</option>
+                        </select>
+                        <div class="info-text">PNG for quality, JPG for smaller file size</div>
+                    </div>
+                </div>
+
+                <!-- Build Options -->
+                <div class="tab-content" id="buildTab">
+                    <div class="form-group">
+                        <label>Build Summary</label>
+                        <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: var(--border-radius);">
+                            <div style="margin-bottom: 10px;">
+                                <strong>Parts:</strong> <span id="summaryParts">0</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <strong>Total Files:</strong> <span id="summaryFiles">0</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <strong>Estimated Size:</strong> <span id="summarySize">0 KB</span>
+                            </div>
+                            <div>
+                                <strong>Compression:</strong> <span id="summaryCompression">Store</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">Initializing...</div>
+                    </div>
+
+                    <div class="status" id="status"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Controls -->
+        <div class="controls">
+            <button class="btn btn-success" id="generateBtn">
+                <i class="fas fa-play"></i> Generate Bootanimation
+            </button>
+            <button class="btn btn-primary" id="downloadBtn" disabled>
+                <i class="fas fa-download"></i> Download bootanimation.zip
+            </button>
+            <button class="btn btn-warning" id="previewDescBtn">
+                <i class="fas fa-eye"></i> Preview desc.txt
+            </button>
+            <button class="btn btn-secondary" id="resetBtn">
+                <i class="fas fa-redo"></i> Reset All
+            </button>
+        </div>
+
+        <footer>
+            <p>Android Bootanimation Maker PRO • Full Control • Custom Parts • Compression Options</p>
+            <p>For rooted Android devices only • Always backup original files</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ===== GLOBAL VARIABLES =====
+            let uploadedFiles = [];
+            let parts = [];
+            let selectedFiles = new Set();
+            let currentPartId = null;
+            let generatedZip = null;
+            let compressionLevel = 0; // 0 = store, 6 = fast, 9 = maximum
+
+            // ===== DOM ELEMENTS =====
+            const fileInput = document.getElementById('fileInput');
+            const fileBrowser = document.getElementById('fileBrowser');
+            const filesGrid = document.getElementById('filesGrid');
+            const fileCount = document.getElementById('fileCount');
+            const partsList = document.getElementById('partsList');
+            const partSelector = document.getElementById('partSelector');
+            const assignGrid = document.getElementById('assignGrid');
+            const currentPartName = document.getElementById('currentPartName');
+            
+            const animationName = document.getElementById('animationName');
+            const widthInput = document.getElementById('width');
+            const heightInput = document.getElementById('height');
+            const fpsInput = document.getElementById('fps');
+            const customDesc = document.getElementById('customDesc');
+            const useCustomDesc = document.getElementById('useCustomDesc');
+            const autoGenerateDesc = document.getElementById('autoGenerateDesc');
+            const fileFormat = document.getElementById('fileFormat');
+            
+            const generateBtn = document.getElementById('generateBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const previewDescBtn = document.getElementById('previewDescBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            const deselectAllBtn = document.getElementById('deselectAllBtn');
+            const addPartBtn = document.getElementById('addPartBtn');
+            const clearPartsBtn = document.getElementById('clearPartsBtn');
+            const assignSelectedBtn = document.getElementById('assignSelectedBtn');
+            const removeFromPartBtn = document.getElementById('removeFromPartBtn');
+            
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const status = document.getElementById('status');
+            
+            const summaryParts = document.getElementById('summaryParts');
+            const summaryFiles = document.getElementById('summaryFiles');
+            const summarySize = document.getElementById('summarySize');
+            const summaryCompression = document.getElementById('summaryCompression');
+            
+            // Compression buttons
+            document.querySelectorAll('.compression-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.compression-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    compressionLevel = parseInt(this.dataset.level);
+                    updateSummary();
+                });
+            });
+
+            // ===== INITIALIZATION =====
+            init();
+
+            function init() {
+                // Event Listeners
+                fileBrowser.addEventListener('click', () => fileInput.click());
+                fileBrowser.addEventListener('dragover', handleDragOver);
+                fileBrowser.addEventListener('drop', handleDrop);
+                fileInput.addEventListener('change', handleFileSelect);
+                
+                generateBtn.addEventListener('click', generateBootanimation);
+                downloadBtn.addEventListener('click', downloadBootanimation);
+                previewDescBtn.addEventListener('click', previewDesc);
+                resetBtn.addEventListener('click', resetAll);
+                
+                selectAllBtn.addEventListener('click', selectAllFiles);
+                deselectAllBtn.addEventListener('click', deselectAllFiles);
+                addPartBtn.addEventListener('click', addNewPart);
+                clearPartsBtn.addEventListener('click', clearAllParts);
+                assignSelectedBtn.addEventListener('click', assignSelectedToPart);
+                removeFromPartBtn.addEventListener('click', removeSelectedFromPart);
+                
+                partSelector.addEventListener('change', updateAssignView);
+                
+                // Tab switching
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        const tabId = this.dataset.tab;
+                        
+                        // Update tabs
+                        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Update content
+                        document.querySelectorAll('.tab-content').forEach(content => {
+                            content.classList.remove('active');
+                        });
+                        document.getElementById(tabId + 'Tab').classList.add('active');
+                        
+                        // Refresh view if needed
+                        if (tabId === 'assign') {
+                            updateAssignView();
+                        }
+                    });
+                });
+
+                // Auto-add default part
+                addNewPart();
+                updateSummary();
+            }
+
+            // ===== FILE MANAGEMENT =====
+            function handleDragOver(e) {
+                e.preventDefault();
+                fileBrowser.style.borderColor = '#2196F3';
+                fileBrowser.style.background = 'rgba(33, 150, 243, 0.2)';
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                fileBrowser.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                fileBrowser.style.background = 'rgba(255, 255, 255, 0.05)';
+                
+                const files = Array.from(e.dataTransfer.files);
+                processFiles(files);
+            }
+
+            function handleFileSelect(e) {
+                const files = Array.from(e.target.files);
+                processFiles(files);
+            }
+
+            function processFiles(files) {
+                const imageFiles = files.filter(file => 
+                    file.type.startsWith('image/') && 
+                    (file.name.toLowerCase().endsWith('.png') || 
+                     file.name.toLowerCase().endsWith('.jpg') || 
+                     file.name.toLowerCase().endsWith('.jpeg'))
+                );
+
+                if (imageFiles.length === 0) {
+                    showStatus('Please upload PNG or JPG image files', 'error');
+                    return;
+                }
+
+                // Sort files naturally (frame1, frame2, frame10...)
+                imageFiles.sort((a, b) => {
+                    return a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'});
+                });
+
+                // Add to uploaded files
+                imageFiles.forEach(file => {
+                    uploadedFiles.push({
+                        id: generateId(),
+                        file: file,
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        assignedPart: null,
+                        previewUrl: URL.createObjectURL(file)
+                    });
+                });
+
+                updateFileBrowser();
+                updateSummary();
+                showStatus(`Added ${imageFiles.length} files`, 'success');
+            }
+
+            function updateFileBrowser() {
+                fileCount.textContent = uploadedFiles.length;
+                
+                if (uploadedFiles.length === 0) {
+                    filesGrid.innerHTML = '<div class="text-center" style="grid-column: 1/-1; color: #78909C; padding: 40px;">No files uploaded yet</div>';
+                    return;
+                }
+
+                filesGrid.innerHTML = '';
+                uploadedFiles.forEach(file => {
+                    const isSelected = selectedFiles.has(file.id);
+                    
+                    const fileThumb = document.createElement('div');
+                    fileThumb.className = `file-thumb ${isSelected ? 'selected' : ''}`;
+                    fileThumb.dataset.id = file.id;
+                    fileThumb.draggable = true;
+                    
+                    fileThumb.innerHTML = `
+                        <img src="${file.previewUrl}" alt="${file.name}" loading="lazy">
+                        <div class="file-name">${file.name}</div>
+                        ${isSelected ? '<div class="file-check"><i class="fas fa-check"></i></div>' : ''}
+                    `;
+                    
+                    fileThumb.addEventListener('click', (e) => {
+                        if (!e.ctrlKey && !e.metaKey && !e.shiftKey) {
+                            // Single click: toggle selection
+                            toggleFileSelection(file.id);
+                        }
+                    });
+                    
+                    fileThumb.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('text/plain', file.id);
+                        e.dataTransfer.effectAllowed = 'move';
+                    });
+                    
+                    filesGrid.appendChild(fileThumb);
+                });
+            }
+
+            function toggleFileSelection(fileId) {
+                if (selectedFiles.has(fileId)) {
+                    selectedFiles.delete(fileId);
+                } else {
+                    selectedFiles.add(fileId);
+                }
+                updateFileBrowser();
+            }
+
+            function selectAllFiles() {
+                uploadedFiles.forEach(file => selectedFiles.add(file.id));
+                updateFileBrowser();
+            }
+
+            function deselectAllFiles() {
+                selectedFiles.clear();
+                updateFileBrowser();
+            }
+
+            // ===== PART MANAGEMENT =====
+            function addNewPart() {
+                const partId = generateId();
+                const partNumber = parts.length + 1;
+                
+                const newPart = {
+                    id: partId,
+                    name: `part${partNumber - 1}`,
+                    displayName: `Part ${partNumber}`,
+                    count: partNumber === 1 ? 1 : 0, // First part plays once, others loop
+                    pause: 0,
+                    files: [],
+                    order: partNumber
+                };
+                
+                parts.push(newPart);
+                updatePartsList();
+                updatePartSelector();
+                updateSummary();
+                
+                // Auto-select new part in assign tab
+                if (document.querySelector('.tab[data-tab="assign"]').classList.contains('active')) {
+                    partSelector.value = partId;
+                    updateAssignView();
+                }
+            }
+
+            function updatePartsList() {
+                if (parts.length === 0) {
+                    partsList.innerHTML = '<div class="text-center" style="color: #78909C; padding: 30px;">No parts created yet</div>';
+                    return;
+                }
+
+                partsList.innerHTML = '';
+                parts.forEach(part => {
+                    const partItem = document.createElement('div');
+                    partItem.className = 'part-item';
+                    
+                    const fileTags = part.files.map(fileId => {
+                        const file = uploadedFiles.find(f => f.id === fileId);
+                        return file ? `<span class="file-tag">${file.name}</span>` : '';
+                    }).join('');
+                    
+                    partItem.innerHTML = `
+                        <div class="part-header">
+                            <div class="part-name">${part.displayName} (${part.name})</div>
+                            <div class="part-controls">
+                                <button class="part-control-btn" data-action="edit" data-id="${part.id}" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="part-control-btn" data-action="delete" data-id="${part.id}" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="part-details">
+                            <div>Loop: ${part.count === 0 ? 'Infinite' : part.count + ' time(s)'}</div>
+                            <div>Pause: ${part.pause} frames</div>
+                        </div>
+                        <div class="part-files">
+                            ${part.files.length > 0 ? fileTags : '<span style="color: #78909C;">No files assigned</span>'}
+                        </div>
+                    `;
+                    
+                    partsList.appendChild(partItem);
+                });
+
+                // Add event listeners to part controls
+                partsList.querySelectorAll('[data-action="edit"]').forEach(btn => {
+                    btn.addEventListener('click', () => editPart(btn.dataset.id));
+                });
+                
+                partsList.querySelectorAll('[data-action="delete"]').forEach(btn => {
+                    btn.addEventListener('click', () => deletePart(btn.dataset.id));
+                });
+            }
+
+            function updatePartSelector() {
+                partSelector.innerHTML = '<option value="">Select a part...</option>';
+                parts.forEach(part => {
+                    const option = document.createElement('option');
+                    option.value = part.id;
+                    option.textContent = `${part.displayName} (${part.files.length} files)`;
+                    partSelector.appendChild(option);
+                });
+            }
+
+            function editPart(partId) {
+                const part = parts.find(p => p.id === partId);
+                if (!part) return;
+                
+                const newName = prompt('Enter new part name:', part.name);
+                if (newName && newName.trim()) {
+                    part.name = newName.trim();
+                    const newDisplayName = prompt('Enter display name:', part.displayName);
+                    if (newDisplayName) part.displayName = newDisplayName;
+                    
+                    const newCount = prompt('Loop count (0 = infinite):', part.count);
+                    if (newCount !== null) part.count = parseInt(newCount) || 0;
+                    
+                    const newPause = prompt('Pause between frames:', part.pause);
+                    if (newPause !== null) part.pause = parseInt(newPause) || 0;
+                    
+                    updatePartsList();
+                    updatePartSelector();
+                    updateSummary();
+                }
+            }
+
+            function deletePart(partId) {
+                if (!confirm('Delete this part? Files will be unassigned.')) return;
+                
+                const partIndex = parts.findIndex(p => p.id === partId);
+                if (partIndex === -1) return;
+                
+                // Unassign files from this part
+                const part = parts[partIndex];
+                part.files.forEach(fileId => {
+                    const file = uploadedFiles.find(f => f.id === fileId);
+                    if (file) file.assignedPart = null;
+                });
+                
+                // Remove part
+                parts.splice(partIndex, 1);
+                
+                // Update order
+                parts.forEach((p, index) => {
+                    p.order = index + 1;
+                    p.name = `part${index}`;
+                });
+                
+                updatePartsList();
+                updatePartSelector();
+                updateFileBrowser();
+                updateSummary();
+                
+                if (currentPartId === partId) {
+                    currentPartId = null;
+                    updateAssignView();
+                }
+            }
+
+            function clearAllParts() {
+                if (!confirm('Clear all parts? All files will be unassigned.')) return;
+                
+                // Unassign all files
+                uploadedFiles.forEach(file => {
+                    file.assignedPart = null;
+                });
+                
+                // Clear parts
+                parts = [];
+                
+                updatePartsList();
+                updatePartSelector();
+                updateFileBrowser();
+                updateSummary();
+                
+                currentPartId = null;
+                updateAssignView();
+            }
+
+            // ===== FILE ASSIGNMENT =====
+            function updateAssignView() {
+                currentPartId = partSelector.value;
+                const part = parts.find(p => p.id === currentPartId);
+                
+                if (!part) {
+                    currentPartName.textContent = 'None';
+                    assignGrid.innerHTML = '<div class="text-center" style="grid-column: 1/-1; color: #78909C; padding: 40px;">Select a part first</div>';
+                    return;
+                }
+                
+                currentPartName.textContent = part.displayName;
+                
+                // Show all files with assignment status
+                if (uploadedFiles.length === 0) {
+                    assignGrid.innerHTML = '<div class="text-center" style="grid-column: 1/-1; color: #78909C; padding: 40px;">No files uploaded yet</div>';
+                    return;
+                }
+                
+                assignGrid.innerHTML = '';
+                uploadedFiles.forEach(file => {
+                    const isAssigned = file.assignedPart === part.id;
+                    const isSelected = selectedFiles.has(file.id);
+                    
+                    const fileThumb = document.createElement('div');
+                    fileThumb.className = `file-thumb ${isSelected ? 'selected' : ''} ${isAssigned ? 'assigned' : ''}`;
+                    fileThumb.dataset.id = file.id;
+                    fileThumb.style.borderColor = isAssigned ? '#4CAF50' : 'transparent';
+                    
+                    fileThumb.innerHTML = `
+                        <img src="${file.previewUrl}" alt="${file.name}" loading="lazy">
+                        <div class="file-name">${file.name}</div>
+                        ${isAssigned ? '<div class="file-check" style="background: #4CAF50;"><i class="fas fa-check"></i></div>' : ''}
+                        ${isSelected ? '<div class="file-check" style="background: #2196F5;"><i class="fas fa-check"></i></div>' : ''}
+                    `;
+                    
+                    fileThumb.addEventListener('click', (e) => {
+                        if (!e.ctrlKey && !e.metaKey && !e.shiftKey) {
+                            toggleFileSelection(file.id);
+                        }
+                    });
+                    
+                    assignGrid.appendChild(fileThumb);
+                });
+                
+                // Allow drop for drag and drop assignment
+                assignGrid.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                });
+                
+                assignGrid.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const fileId = e.dataTransfer.getData('text/plain');
+                    assignFileToPart(fileId, part.id);
+                });
+            }
+
+            function assignSelectedToPart() {
+                if (!currentPartId) {
+                    showStatus('Please select a part first', 'error');
+                    return;
+                }
+                
+                const part = parts.find(p => p.id === currentPartId);
+                if (!part) return;
+                
+                let assignedCount = 0;
+                selectedFiles.forEach(fileId => {
+                    if (assignFileToPart(fileId, part.id)) {
+                        assignedCount++;
+                    }
+                });
+                
+                selectedFiles.clear();
+                updateAssignView();
+                updatePartsList();
+                updatePartSelector();
+                updateSummary();
+                
+                showStatus(`Assigned ${assignedCount} files to ${part.displayName}`, 'success');
+            }
+
+            function assignFileToPart(fileId, partId) {
+                const file = uploadedFiles.find(f => f.id === fileId);
+                const part = parts.find(p => p.id === partId);
+                
+                if (!file || !part) return false;
+                
+                // Remove from previous part if assigned
+                if (file.assignedPart && file.assignedPart !== partId) {
+                    const oldPart = parts.find(p => p.id === file.assignedPart);
+                    if (oldPart) {
+                        const index = oldPart.files.indexOf(fileId);
+                        if (index > -1) oldPart.files.splice(index, 1);
+                    }
+                }
+                
+                // Assign to new part
+                file.assignedPart = partId;
+                if (!part.files.includes(fileId)) {
+                    part.files.push(fileId);
+                }
+                
+                return true;
+            }
+
+            function removeSelectedFromPart() {
+                if (!currentPartId) {
+                    showStatus('Please select a part first', 'error');
+                    return;
+                }
+                
+                const part = parts.find(p => p.id === currentPartId);
+                if (!part) return;
+                
+                let removedCount = 0;
+                selectedFiles.forEach(fileId => {
+                    const file = uploadedFiles.find(f => f.id === fileId);
+                    if (file && file.assignedPart === part.id) {
+                        file.assignedPart = null;
+                        const index = part.files.indexOf(fileId);
+                        if (index > -1) {
+                            part.files.splice(index, 1);
+                            removedCount++;
+                        }
+                    }
+                });
+                
+                selectedFiles.clear();
+                updateAssignView();
+                updatePartsList();
+                updatePartSelector();
+                updateSummary();
+                
+                showStatus(`Removed ${removedCount} files from ${part.displayName}`, 'success');
+            }
+
+            // ===== BOOTANIMATION GENERATION =====
+            async function generateBootanimation() {
+                // Validation
+                if (uploadedFiles.length === 0) {
+                    showStatus('Please upload animation frames first', 'error');
+                    return;
+                }
+                
+                if (parts.length === 0) {
+                    showStatus('Please create at least one part', 'error');
+                    return;
+                }
+                
+                // Check if all parts have files
+                const emptyParts = parts.filter(p => p.files.length === 0);
+                if (emptyParts.length > 0) {
+                    showStatus(`Part${emptyParts.length > 1 ? 's' : ''} ${emptyParts.map(p => p.displayName).join(', ')} have no files`, 'error');
+                    return;
+                }
+
+                // Show progress
+                progressContainer.style.display = 'block';
+                progressFill.style.width = '0%';
+                progressText.textContent = 'Preparing bootanimation...';
+                downloadBtn.disabled = true;
+                generatedZip = null;
+
+                try {
+                    const zip = new JSZip();
+                    
+                    // Generate desc.txt
+                    let descContent = '';
+                    if (useCustomDesc.checked) {
+                        descContent = customDesc.value;
+                    } else {
+                        const width = widthInput.value || '1080';
+                        const height = heightInput.value || '1920';
+                        const fps = fpsInput.value || '30';
+                        
+                        descContent = `${width} ${height} ${fps}\n`;
+                        parts.forEach(part => {
+                            descContent += `p ${part.count} ${part.pause} ${part.name}\n`;
+                        });
+                    }
+                    
+                    zip.file("desc.txt", descContent);
+
+                    // Process each part
+                    let totalProcessed = 0;
+                    const totalFiles = parts.reduce((sum, part) => sum + part.files.length, 0);
+                    
+                    for (let partIndex = 0; partIndex < parts.length; partIndex++) {
+                        const part = parts[partIndex];
+                        const partFolder = zip.folder(part.name);
+                        
+                        // Sort files by their original order
+                        const partFiles = part.files
+                            .map(fileId => uploadedFiles.find(f => f.id === fileId))
+                            .filter(f => f)
+                            .sort((a, b) => {
+                                const indexA = uploadedFiles.findIndex(f => f.id === a.id);
+                                const indexB = uploadedFiles.findIndex(f => f.id === b.id);
+                                return indexA - indexB;
+                            });
+                        
+                        progressText.textContent = `Processing ${part.displayName}...`;
+                        progressFill.style.width = `${(partIndex / parts.length * 50)}%`;
+                        
+                        // Add frames to this part
+                        for (let i = 0; i < partFiles.length; i++) {
+                            const file = partFiles[i];
+                            const frameNumber = i + 1;
+                            const frameName = `frame${frameNumber.toString().padStart(5, '0')}.${fileFormat.value}`;
+                            
+                            try {
+                                const arrayBuffer = await readFileAsArrayBuffer(file.file);
+                                partFolder.file(frameName, arrayBuffer, {
+                                    compression: compressionLevel === 0 ? "STORE" : "DEFLATE",
+                                    compressionOptions: compressionLevel === 0 ? null : { level: compressionLevel }
+                                });
+                                
+                                totalProcessed++;
+                                const progress = 50 + (totalProcessed / totalFiles * 50);
+                                progressFill.style.width = `${progress}%`;
+                                
+                            } catch (error) {
+                                console.error(`Error processing file ${file.name}:`, error);
+                                // Continue with next file
+                            }
+                        }
+                    }
+
+                    // Generate zip with compression
+                    progressText.textContent = 'Compressing ZIP file...';
+                    progressFill.style.width = '95%';
+
+                    generatedZip = await zip.generateAsync({
+                        type: "blob",
+                        compression: compressionLevel === 0 ? "STORE" : "DEFLATE",
+                        compressionOptions: compressionLevel === 0 ? null : { level: compressionLevel }
+                    });
+
+                    // Complete
+                    progressFill.style.width = '100%';
+                    progressText.textContent = 'Bootanimation created successfully!';
+                    
+                    // Enable download button
+                    setTimeout(() => {
+                        downloadBtn.disabled = false;
+                        showStatus('Bootanimation.zip ready for download! File size: ' + formatFileSize(generatedZip.size), 'success');
+                    }, 500);
+
+                } catch (error) {
+                    console.error('Error generating bootanimation:', error);
+                    showStatus('Error generating bootanimation: ' + error.message, 'error');
+                    progressContainer.style.display = 'none';
+                }
+            }
+
+            function downloadBootanimation() {
+                if (!generatedZip) {
+                    showStatus('No bootanimation generated yet', 'error');
+                    return;
+                }
+
+                const fileName = animationName.value.trim() || 'bootanimation';
+                saveAs(generatedZip, `${fileName}.zip`);
+                
+                showStatus('bootanimation.zip downloaded successfully!', 'success');
+            }
+
+            function previewDesc() {
+                let descContent = '';
+                if (useCustomDesc.checked) {
+                    descContent = customDesc.value;
+                } else {
+                    const width = widthInput.value || '1080';
+                    const height = heightInput.value || '1920';
+                    const fps = fpsInput.value || '30';
+                    
+                    descContent = `${width} ${height} ${fps}\n`;
+                    parts.forEach(part => {
+                        descContent += `p ${part.count} ${part.pause} ${part.name}\n`;
+                    });
+                }
+                
+                alert('desc.txt preview:\n\n' + descContent);
+            }
+
+            // ===== UTILITY FUNCTIONS =====
+            function updateSummary() {
+                summaryParts.textContent = parts.length;
+                
+                const totalFiles = parts.reduce((sum, part) => sum + part.files.length, 0);
+                summaryFiles.textContent = totalFiles;
+                
+                // Estimate size
+                let totalSize = 0;
+                parts.forEach(part => {
+                    part.files.forEach(fileId => {
+                        const file = uploadedFiles.find(f => f.id === fileId);
+                        if (file) totalSize += file.size;
+                    });
+                });
+                
+                summarySize.textContent = formatFileSize(totalSize);
+                
+                // Compression
+                let compressionText = '';
+                switch(compressionLevel) {
+                    case 0: compressionText = 'Store (no compression)'; break;
+                    case 6: compressionText = 'Fast compression'; break;
+                    case 9: compressionText = 'Maximum compression'; break;
+                }
+                summaryCompression.textContent = compressionText;
+            }
+
+            function readFileAsArrayBuffer(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsArrayBuffer(file);
+                });
+            }
+
+            function showStatus(message, type) {
+                status.textContent = message;
+                status.className = `status status-${type}`;
+                status.style.display = 'block';
+                
+                if (type !== 'error') {
+                    setTimeout(() => {
+                        status.style.display = 'none';
+                    }, 5000);
+                }
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            function generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2);
+            }
+
+            function resetAll() {
+                if (!confirm('Reset everything? All files and parts will be cleared.')) return;
+                
+                // Clean up object URLs
+                uploadedFiles.forEach(file => {
+                    if (file.previewUrl) URL.revokeObjectURL(file.previewUrl);
+                });
+                
+                // Reset all data
+                uploadedFiles = [];
+                parts = [];
+                selectedFiles.clear();
+                currentPartId = null;
+                generatedZip = null;
+                compressionLevel = 0;
+                
+                // Reset UI
+                updateFileBrowser();
+                updatePartsList();
+                updatePartSelector();
+                updateAssignView();
+                updateSummary();
+                
+                // Reset form
+                animationName.value = 'custom_bootanimation';
+                widthInput.value = '1080';
+                heightInput.value = '1920';
+                fpsInput.value = '30';
+                customDesc.value = '1080 1920 30\np 1 0 part0\np 0 0 part1';
+                useCustomDesc.checked = true;
+                fileFormat.value = 'png';
+                
+                // Reset compression buttons
+                document.querySelectorAll('.compression-btn').forEach((btn, index) => {
+                    btn.classList.toggle('active', index === 0);
+                });
+                
+                // Reset progress
+                progressContainer.style.display = 'none';
+                downloadBtn.disabled = true;
+                status.style.display = 'none';
+                
+                // Add default part
+                addNewPart();
+                
+                showStatus('All settings reset', 'info');
+            }
+
+            // Add Font Awesome
+            const faLink = document.createElement('link');
+            faLink.rel = 'stylesheet';
+            faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+            document.head.appendChild(faLink);
+        });
+    </script>
+</body>
+</html>
